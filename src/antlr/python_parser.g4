@@ -170,12 +170,9 @@ term
     ;
 
 factor
-    // 1️⃣ method call: line.split(...)
     : IDENTIFIER (DOT IDENTIFIER)+ OPEN_B
         (expr (COMMA expr)*)?
       CLOSE_B
-
-    // 2️⃣ function call: foo(...)
     | IDENTIFIER OPEN_B
         (
             IDENTIFIER ASSIGN expr (COMMA IDENTIFIER ASSIGN expr)*
@@ -183,34 +180,16 @@ factor
         )?
       CLOSE_B
 
-    // 3️⃣ indexing + attribute: a[0], a.b, a.b[0]
     | IDENTIFIER (DOT IDENTIFIER)? (LSB expr (COMMA expr)* RSB)+
-
-    // 4️⃣ attribute only: a.b.c
     | IDENTIFIER (DOT IDENTIFIER)+
-
-    // 5️⃣ compound assignment: += -= *= /=
     | IDENTIFIER (PLUS ASSIGN | MINUS ASSIGN | MUL ASSIGN | DIV ASSIGN) expr
 
-    // 6️⃣ assignment expression
     | assignment
-
-    // 7️⃣ array literal
     | array
-
-    // 8️⃣ dict literal
     | LKB (expr COL expr (COMMA expr COL expr)* COMMA?)? RKB
-
-    // 9️⃣ grouping
     | OPEN_B expr (COMMA expr)* CLOSE_B
-
-    // 🔟 list literal
     | LSB expr (COMMA expr)* RSB
-
-    // 1️⃣1️⃣ unary not
     | NOT factor
-
-    // 1️⃣2️⃣ literals
     | NUMBER
     | STRING
     | TRUE
