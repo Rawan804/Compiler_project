@@ -4,10 +4,10 @@ import java.util.List;
 
 public class ImportNode extends Node {
 
-    private IdentifierNode module;        // اسم الموديول (math, numpy)
-    private List<IdentifierNode> names;   // الأسماء المستوردة (sqrt, sin) أو null
-    private IdentifierNode alias;          // alias (np) أو null
-    private boolean isFromImport;          // from x import y ؟
+    private IdentifierNode module;       
+    private List<IdentifierNode> names;  
+    private IdentifierNode alias;         
+    private boolean isFromImport;        
 
     public ImportNode(int line,
                       IdentifierNode module,
@@ -55,7 +55,7 @@ public class ImportNode extends Node {
     }
 
 
-    // Getters (اختياري)
+
     public IdentifierNode getModuleName() { return module; }
     public List<IdentifierNode> getNames() { return names; }
     public IdentifierNode getAlias() { return alias; }

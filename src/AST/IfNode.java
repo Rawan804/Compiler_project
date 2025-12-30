@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IfNode extends Node {
-    private Node condition;           // شرط الـ if
-    private List<Node> thenBody;      // قائمة التعليمات داخل الـ if
-    private List<Node> elifConditions; // قائمة شروط elif (كل شرط عبارة عن ASTNode)
-    private List<List<Node>> elifBodies; // قائمة تعليمات لكل elif
-    private List<Node> elseBody;     // قائمة التعليمات داخل الـ else
+    private Node condition;          
+    private List<Node> thenBody;     
+    private List<Node> elifConditions; 
+    private List<List<Node>> elifBodies; 
+    private List<Node> elseBody;   
 
-    // Constructor
+   
     public IfNode(int line,
                   Node condition,
                   List<Node> thenBody,

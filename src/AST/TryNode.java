@@ -9,7 +9,7 @@ public class TryNode extends Node {
     private List<Node> tryBody;
     private List<Node> exceptTypes;
     private List<List<Node>> exceptBodies;
-    private List<Node> elseBody;        // ✅ جديد
+    private List<Node> elseBody;        
     private List<Node> finallyBody;
 
     public TryNode(int line,
@@ -31,13 +31,13 @@ public class TryNode extends Node {
     public void print(String indent) {
         System.out.println(indent + nodeName + " [line=" + line + "]");
 
-        // طباعة try body
+      
         System.out.println(indent + "  TryBody:");
         for (Node stmt : tryBody) {
             stmt.print(indent + "    ");
         }
 
-        // طباعة except
+ 
         if (exceptBodies != null && !exceptBodies.isEmpty()) {
             for (int i = 0; i < exceptBodies.size(); i++) {
                 System.out.print(indent + "  ExceptType: ");
@@ -58,7 +58,7 @@ public class TryNode extends Node {
                 stmt.print(indent + "    ");
             }
         }
-        // طباعة finally
+     
         if (finallyBody != null && !finallyBody.isEmpty()) {
             System.out.println(indent + "  FinallyBody:");
             for (Node stmt : finallyBody) {

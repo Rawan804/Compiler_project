@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Node {
-    protected int line;          // رقم السطر
-    protected String nodeName;   // اسم العقدة
-    protected Kind kind;         // نوع العقدة
+    protected int line;         
+    protected String nodeName;   
+    protected Kind kind;         
 
     public Node(int line, Kind kind, String nodeName) {
         this.line = line;
@@ -25,10 +25,7 @@ public abstract class Node {
         return nodeName;
     }
 
-    /**
-     * دالة مجردة → polymorphism
-     * كل عقدة تطبع نفسها بطريقتها
-     */
+    
     public abstract void print(String indent);
 
 }
