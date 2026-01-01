@@ -17,15 +17,19 @@ public class FunctionCallNode extends Node {
         System.out.println(indent + nodeName + " [line=" + line + "]");
         System.out.println(indent + "  functionName:");
         functionName.print(indent + "  ");
-        for (Node arg : arguments) {
-            if (arg != null){
-                System.out.println(indent + "  arguements:");
-                arg.print(indent + "  ");}
-            else
-                System.out.println(indent + "  null");
-        }
 
+        if (!arguments.isEmpty()) {
+            System.out.println(indent + "  parameters:");
+            for (Node arg : arguments) {
+                if (arg != null) {
+                    arg.print(indent + "    ");
+                } else {
+                    System.out.println(indent + "    null");
+                }
+            }
+        }
     }
+
 
     public List<Node> getArguments() {
         return arguments;
