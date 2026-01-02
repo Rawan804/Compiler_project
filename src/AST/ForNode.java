@@ -6,14 +6,14 @@ public class ForNode extends Node {
     private Node iterator;
     private Node iterable;
     private List<Node> body;
-    private List<Node> elseBody;
 
-    public ForNode(int line, Node iterator, Node iterable, List<Node> body, List<Node> elseBody) {
+
+    public ForNode(int line, Node iterator, Node iterable, List<Node> body) {
         super(line, Kind.FOR, "ForNode");
         this.iterator = iterator;
         this.iterable = iterable;
         this.body = body;
-        this.elseBody = elseBody;
+
     }
 
     @Override
@@ -29,12 +29,6 @@ public class ForNode extends Node {
             stmt.print(indent + "    ");
         }
 
-        if (elseBody != null && !elseBody.isEmpty()) {
-            System.out.println(indent + "  ElseBody:");
-            for (Node stmt : elseBody) {
-                stmt.print(indent + "    ");
-            }
-        }
     }
 
     public Node getIterator() {

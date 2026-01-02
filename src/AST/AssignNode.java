@@ -1,5 +1,8 @@
 package AST;
+
+
 public class AssignNode extends Node {
+
     private Node target;
     private Node value;
 
@@ -8,6 +11,7 @@ public class AssignNode extends Node {
         this.target = target;
         this.value = value;
     }
+
     @Override
     public void print(String indent) {
         System.out.println(

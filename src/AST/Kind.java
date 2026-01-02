@@ -1,21 +1,18 @@
 package AST;
 
 
-
 public enum Kind {
 
     PROGRAM,
-
     ASSIGN,
     PRINT,
     IF,
-DOT,
+    DOT,
     FUNC_DEF,
     WITH,
-BREAK,
+    BREAK,
     CLASS,
     CONTINUE,
-
     TRY,
     IMPORT,
     RETURN,

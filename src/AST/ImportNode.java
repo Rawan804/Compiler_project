@@ -4,21 +4,20 @@ import java.util.List;
 
 public class ImportNode extends Node {
 
-    private IdentifierNode module;       
-    private List<IdentifierNode> names;  
-    private IdentifierNode alias;         
-    private boolean isFromImport;        
+    private IdentifierNode module;
+    private List<IdentifierNode> names;
+    private boolean isFromImport;
 
     public ImportNode(int line,
                       IdentifierNode module,
                       List<IdentifierNode> names,
-                      IdentifierNode alias,
+
                       boolean isFromImport) {
 
         super(line, Kind.IMPORT, "ImportNode");
         this.module = module;
         this.names = names;
-        this.alias = alias;
+
         this.isFromImport = isFromImport;
     }
 
@@ -34,18 +33,13 @@ public class ImportNode extends Node {
             for (IdentifierNode name : names) {
                 name.print(indent + "    ");
             }
-        } else {
+        }
+        else {
             if (module != null) {
                 System.out.println(indent + "  Module:");
                 module.print(indent + "    ");
             }
-
-            if (alias != null) {
-                System.out.println(indent + "  Alias:");
-                alias.print(indent + "    ");
-            }
-
-            if (names != null && !names.isEmpty()) {
+            if (names != null ) {
                 System.out.println(indent + "  Import Names:");
                 for (IdentifierNode name : names) {
                     name.print(indent + "    ");
@@ -55,9 +49,8 @@ public class ImportNode extends Node {
     }
 
 
-
+    // Getters (اختياري)
     public IdentifierNode getModuleName() { return module; }
     public List<IdentifierNode> getNames() { return names; }
-    public IdentifierNode getAlias() { return alias; }
     public boolean isFromImport() { return isFromImport; }
 }

@@ -34,7 +34,7 @@ public class WithNode extends Node {
         }
     }
 
-    // Getters إذا تحتاجين
+
     public Node getContextExpr() { return contextExpr; }
     public IdentifierNode getOptionalVar() { return optionalVar; }
     public List<Node> getBody() { return body; }
