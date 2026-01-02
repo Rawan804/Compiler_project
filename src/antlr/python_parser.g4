@@ -49,10 +49,14 @@ forStmt
 
     ;
 
+
+
 whileStmt
     : WHILE expr COL stat*
       (ELSE COL stat*)?
     ;
+
+
 
 ifStmt
     : IF expr (COL)? stat*
@@ -67,8 +71,6 @@ ifStmt
 tryStmt
     : TRY COL stat*
       (EXCEPT IDENTIFIER? COL stat*)+
-      (ELSE COL stat*)?
-      (FINALLY COL stat*)?
     ;
 
 
@@ -85,6 +87,8 @@ continueStmt
 returnStmt
     : RETURN expr (COMMA expr)*
     ;
+
+
 
 printStmt
     : PRINT OPEN_B expr (COMMA expr)* CLOSE_B
@@ -142,7 +146,6 @@ array
     | tuplesStmt
     | setStmt
     | dictStmt
-
     | RANGE OPEN_B expr (COMMA expr)*? CLOSE_B
     ;
 
@@ -158,7 +161,7 @@ assignment
 
 expr
     : expr (PLUS | MINUS) term
-    | expr (GREATERTHAN | SMALLERTHAN | EQ | GREATEROREQ | SMALLOREQ) term
+    | expr (GREATERTHAN | SMALLERTHAN | EQ |NOTEQ| GREATEROREQ | SMALLOREQ) term
     | expr (AND | OR) term
     |expr (PLUS | MINUS|MUL | DIV) ASSIGN expr
     | term
@@ -169,21 +172,14 @@ term
     | factor
     ;
 
-factor
-    : IDENTIFIER (DOT IDENTIFIER)+ OPEN_B
-        (expr (COMMA expr)*)?
-      CLOSE_B
-    | IDENTIFIER OPEN_B
-        (
-            IDENTIFIER ASSIGN expr (COMMA IDENTIFIER ASSIGN expr)*
-          | expr (COMMA expr)*
-        )?
-      CLOSE_B
 
+factor
+
+    : IDENTIFIER (DOT IDENTIFIER)+ OPEN_B (expr (COMMA expr)*)?  CLOSE_B
+    | IDENTIFIER OPEN_B( IDENTIFIER ASSIGN expr (COMMA IDENTIFIER ASSIGN expr)* | expr (COMMA expr)*)?  CLOSE_B
     | IDENTIFIER (DOT IDENTIFIER)? (LSB expr (COMMA expr)* RSB)+
     | IDENTIFIER (DOT IDENTIFIER)+
     | IDENTIFIER (PLUS ASSIGN | MINUS ASSIGN | MUL ASSIGN | DIV ASSIGN) expr
-
     | assignment
     | array
     | LKB (expr COL expr (COMMA expr COL expr)* COMMA?)? RKB
@@ -195,7 +191,5 @@ factor
     | TRUE
     | FALSE
     | NULL
-
-    // ⚠️ آخر شي دائمًا
     | IDENTIFIER
     ;
