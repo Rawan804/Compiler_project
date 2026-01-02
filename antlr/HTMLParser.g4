@@ -1,241 +1,103 @@
-parser grammar HTMLParser;
+lexer grammar HTMLLexer;
 
-options { tokenVocab = HTMLLexer; }
+OPEN : '<' -> pushMode(HTML_TAG_MODE);
+JINJA_EXPR_OPEN : '{{' -> pushMode(JINJA_EXPR_MODE);
+JINJA_STMT_OPEN : '{%' -> pushMode(JINJA_STMT_MODE);
+JINJA_COMMENT   : '{#' .*? '#}' -> skip;
+WS_CONTENT : [ \t\r\n]+ -> skip;
+HTML_COMMENT    : '<!--' .*? '-->' -> skip;
+TEXT : (
+      ~[<{]
+    | '$' {_input.LA(1) != '{' && _input.LA(2) != '{'}?
+    )+ ;
+
+ENTITY : '&' [a-zA-Z#]+ ';';
+JINJA_ID : [a-zA-Z_][a-zA-Z0-9_]* ;
+DOT      : '.';
+NUMBER   : [0-9]+;
+STRING_J : '"' (~["\\] | '\\' .)* '"';
 
 
+mode HTML_TAG_MODE;
 
-doctype
-    : OPEN DOC DOCTYPE HTML CLOSE
-    #doctypeNode
+CLOSE : '>' -> popMode;
+SLASH : '/';
+EQ    : '=';
+HTML  : 'html';
+HEAD  : 'head';
+BODY  : 'body';
+ACTION_KW:'action';
+TITLE : 'title';
+DIV   : 'div';
+P     : 'p';
+H1    : 'h1'; H2 : 'h2'; H3 : 'h3'; H4 : 'h4'; H5 : 'h5'; H6 : 'h6';
+SPAN  : 'span';
+IMG   : 'img';
+UL    : 'ul';
+FORM:'form';
+INPUT:'input';
+TYPE_KW:'type';
+TYPE:'"text"'|'"number"'|'"submit"'|'"password"';
+NAME:'name';
+LI    : 'li';
+SRC   : 'src';
+BR:'br';
+REQUIRED:'required';
+
+HREF_KW:'href';
+A:'a';
+DOCTYPE:'DOCTYPE';
+DOC:'!';
+HTML_KW:'HTML';
+REL_KW:'rel';
+REL:'"stylesheet"'|'"icon"';
+TEXTAREA:'textarea';
+LINK:'link';
+BUTTON_KW:'button';
+BUTTON:'"submeit"'|'"button"';
+METHOD_KW:'method';
+METHOD:'"post"' | '"PUSH"' | '"DELETE"';
+STYLE:'style';
+PLACEHOLDER:'placeholder';
+
+ATR   : [a-zA-Z_] [a-zA-Z0-9_\-]* ;
+
+STRING
+    : '"' (~["\\\r\n] | '\\' .)* '"'
+    | '\'' (~['\\\r\n] | '\\' .)* '\''
     ;
 
-html
-    : doctype
-      OPEN HTML CLOSE
-        head?
-        body?
-      OPEN SLASH HTML CLOSE
-    #htmlNode
-    ;
+WS_TAG : [ \t\r\n]+ -> skip;
+
+mode JINJA_EXPR_MODE;
+
+JINJA_EXPR_CLOSE : '}}' -> popMode;
+PIPE     : '|';
+
+EXPR_ID     : [a-zA-Z_][a-zA-Z0-9_]* -> type(JINJA_ID);
+EXPR_DOT    : '.' -> type(DOT);
+EXPR_NUM    : [0-9]+ -> type(NUMBER);
+EXPR_STR    : '"' (~["\\] | '\\' .)* '"' -> type(STRING_J);
+
+WS_JINJA : [ \t\r\n]+ -> skip;
+
+mode JINJA_STMT_MODE;
+
+JINJA_STMT_CLOSE : '%}' -> popMode;
+
+FOR    : 'for';
+ENDFOR : 'endfor';
+IN     : 'in';
+IF     : 'if';
+ELSE   : 'else';
+ENDIF  : 'endif';
+
+OP : '==' | '!=' | '>=' | '<=' | '>' | '<';
 
 
-head
-    : OPEN HEAD attribute* CLOSE
-        title?
-        link*
-      OPEN SLASH HEAD CLOSE
-    #headNode
-    ;
+STMT_ID     : [a-zA-Z_][a-zA-Z0-9_]* -> type(JINJA_ID);
+STMT_DOT    : '.' -> type(DOT);
+STMT_NUM    : [0-9]+ -> type(NUMBER);
+STMT_STR    : '"' (~["\\] | '\\' .)* '"' -> type(STRING_J);
 
-title
-    : OPEN TITLE attribute* CLOSE
-        inlineContent*
-      OPEN SLASH TITLE CLOSE
-    #titleNode
-    ;
-
-body
-    : OPEN BODY attribute* CLOSE
-        content*
-      OPEN SLASH BODY CLOSE
-    #bodyNode
-    ;
-
-
-content
-    : element        #elementContent
-    | jinjaExpr      #jinjaExprContent
-    | jinjaStmt      #jinjaStmtContent
-    | textContent    #textContentContent
-    ;
-
-
-element
-    : div
-    | h1 | h2 | h3 | h4 | h5 | h6
-    | p
-    | span
-    | a
-    | ul
-    | li
-    | form
-    | button
-    | input
-    |textarea
-    | img
-    | br
-    | link
-    ;
-
-
-textContent
-    : TEXT        #plainText
-    ;
-
-inlineContent
-    : textContent
-    | jinjaExpr
-    | jinjaStmt
-    ;
-
-
-
-div
-    : OPEN DIV attribute* CLOSE
-        content*
-      OPEN SLASH DIV CLOSE
-    #divNode
-    ;
-
-ul
-    : OPEN UL attribute* CLOSE
-        (li|content|jinjaStmt )*
-      OPEN SLASH UL CLOSE
-    #ulNode
-    ;
-
-li
-    : OPEN LI attribute* CLOSE
-        content*
-      OPEN SLASH LI CLOSE
-    #liNode
-    ;
-
-form
-    : OPEN FORM attribute* (ACTION_KW EQ (STRING | jinjaExpr))? (METHOD_KW EQ METHOD)? CLOSE
-        content*
-      OPEN SLASH FORM CLOSE
-    #formNode
-    ;
-
-
-h1
-    : OPEN H1 attribute* CLOSE inlineContent* OPEN SLASH H1 CLOSE
-    #h1Node
-    ;
-h2
-    : OPEN H2 attribute* CLOSE inlineContent* OPEN SLASH H2 CLOSE
-    #h2Node
-    ;
-h3
-    : OPEN H3 attribute* CLOSE inlineContent* OPEN SLASH H3 CLOSE
-    #h3Node
-    ;
-h4
-    : OPEN H4 attribute* CLOSE inlineContent* OPEN SLASH H4 CLOSE
-    #h4Node
-    ;
-h5
-    : OPEN H5 attribute* CLOSE inlineContent* OPEN SLASH H5 CLOSE
-    #h5Node
-    ;
-h6
-    : OPEN H6 attribute* CLOSE inlineContent* OPEN SLASH H6 CLOSE
-    #h6Node
-    ;
-
-p
-    : OPEN P attribute* CLOSE inlineContent* OPEN SLASH P CLOSE
-    #pNode
-    ;
-
-span
-    : OPEN SPAN attribute* CLOSE inlineContent* OPEN SLASH SPAN CLOSE
-    #spanNode
-    ;
-
-a
-    : OPEN A attribute* (HREF_KW EQ (STRING | jinjaExpr)) CLOSE content* OPEN SLASH A CLOSE
-    #aNode
-    ;
-
-
-button
-    : OPEN BUTTON_KW attribute*  (TYPE_KW EQ TYPE)* (NAME EQ STRING)* CLOSE content* OPEN SLASH BUTTON_KW CLOSE
-    #buttonNode
-    ;
-
-
-input
-    : OPEN INPUT attribute* (TYPE_KW EQ TYPE)* (NAME EQ STRING)*(PLACEHOLDER EQ STRING)* REQUIRED? SLASH? CLOSE
-    #inputNode
-    ;
-textarea: OPEN TEXTAREA attribute* (TYPE_KW EQ TYPE)* (NAME EQ STRING)*(PLACEHOLDER EQ STRING)* REQUIRED? CLOSE OPEN SLASH? TEXTAREA CLOSE
-             #textareaNode
-             ;
-img
-    : OPEN IMG attribute* (SRC EQ (STRING | jinjaExpr))? SLASH CLOSE
-    #imgNode
-    ;
-
-br
-    : OPEN BR SLASH? CLOSE
-    #brNode
-    ;
-
-link
-    : OPEN LINK attribute* (REL_KW EQ REL)? (HREF_KW EQ STRING)? SLASH? CLOSE
-    #linkNode
-    ;
-
-
-attribute
-    :STYLE EQ STRING #styleAttribute
-    | ATR                             #booleanAttribute
-    | ATR EQ STRING                   #stringAttribute
-    | ATR EQ jinjaExpr                #jinjaAttribute
-    | PLACEHOLDER EQ STRING #placeholerAtr
-    | REQUIRED #requiredAtr
-
-
-    ;
-
-
-jinjaExpr
-    : JINJA_EXPR_OPEN jinjaExpression JINJA_EXPR_CLOSE
-    #jinjaExprNode
-    ;
-
-jinjaExpression
-    : jinjaValue (PIPE jinjaFilter)*
-    #jinjaExpressionNode
-    ;
-
-jinjaValue
-    : JINJA_ID (DOT JINJA_ID)*     #jinjaIdValue
-    | NUMBER                      #jinjaNumberValue
-    | STRING_J                    #jinjaStringValue
-    ;
-
-jinjaFilter
-    : JINJA_ID
-    #jinjaFilterNode
-    ;
-
-
-jinjaStmt
-    : jinjaIf
-    | jinjaFor
-    ;
-
-
-jinjaIf
-    : JINJA_STMT_OPEN IF condition JINJA_STMT_CLOSE
-        content*
-      ( JINJA_STMT_OPEN ELSE JINJA_STMT_CLOSE content* )?
-      JINJA_STMT_OPEN ENDIF JINJA_STMT_CLOSE
-    #jinjaIfNode
-    ;
-
-condition
-    : jinjaValue (OP jinjaValue)?
-    #conditionNode
-    ;
-
-
-jinjaFor
-    : JINJA_STMT_OPEN FOR JINJA_ID IN jinjaValue JINJA_STMT_CLOSE
-        content*
-      JINJA_STMT_OPEN ENDFOR JINJA_STMT_CLOSE
-    #jinjaForNode
-    ;
+WS_JINJA_STMT : [ \t\r\n]+ -> skip;
