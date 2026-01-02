@@ -1,18 +1,22 @@
 lexer grammar HTMLLexer;
 
-
 OPEN : '<' -> pushMode(HTML_TAG_MODE);
-
 JINJA_EXPR_OPEN : '{{' -> pushMode(JINJA_EXPR_MODE);
 JINJA_STMT_OPEN : '{%' -> pushMode(JINJA_STMT_MODE);
 JINJA_COMMENT   : '{#' .*? '#}' -> skip;
 WS_CONTENT : [ \t\r\n]+ -> skip;
-TEXT : ~[<{&]+ ;
+HTML_COMMENT    : '<!--' .*? '-->' -> skip;
+TEXT : (
+      ~[<{]
+    | '$' {_input.LA(1) != '{' && _input.LA(2) != '{'}?
+    )+ ;
+
 ENTITY : '&' [a-zA-Z#]+ ';';
 JINJA_ID : [a-zA-Z_][a-zA-Z0-9_]* ;
 DOT      : '.';
 NUMBER   : [0-9]+;
 STRING_J : '"' (~["\\] | '\\' .)* '"';
+
 
 mode HTML_TAG_MODE;
 
@@ -22,6 +26,7 @@ EQ    : '=';
 HTML  : 'html';
 HEAD  : 'head';
 BODY  : 'body';
+ACTION_KW:'action';
 TITLE : 'title';
 DIV   : 'div';
 P     : 'p';
@@ -37,21 +42,23 @@ NAME:'name';
 LI    : 'li';
 SRC   : 'src';
 BR:'br';
+REQUIRED:'required';
+
 HREF_KW:'href';
 A:'a';
 DOCTYPE:'DOCTYPE';
 DOC:'!';
 HTML_KW:'HTML';
 REL_KW:'rel';
-REL:'"stylesheet"';
+REL:'"stylesheet"'|'"icon"';
+TEXTAREA:'textarea';
 LINK:'link';
 BUTTON_KW:'button';
 BUTTON:'"submeit"'|'"button"';
 METHOD_KW:'method';
-VAL:'$'?'{{'TEXT* '.' TEXT'}}';
-METHOD:'"post"' | '"PUSH"' | '"DELET"';
+METHOD:'"post"' | '"PUSH"' | '"DELETE"';
 STYLE:'style';
-
+PLACEHOLDER:'placeholder';
 
 ATR   : [a-zA-Z_] [a-zA-Z0-9_\-]* ;
 
