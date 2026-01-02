@@ -22,6 +22,11 @@ CSS_VALUE_DISPLAY      : 'block' | 'inline' | 'inline-block' | 'flex' | 'grid' |
 CSS_VALUE_POSITION     : 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky' ;
 CSS_VALUE_TEXT_ALIGN   : 'left' | 'right' | 'center' | 'justify' ;
 CSS_VALUE_FONT_WEIGHT  : 'normal' | 'bold' | 'bolder' | 'lighter' | [1-9] '00' ;
+CSS_PROP_GRID_TEMPLATE_COLUMNS : 'grid-template-columns' ;
+CSS_PROP_GRID_TEMPLATE_ROWS : 'grid-template-rows' ;
+CSS_PROP_GRID_GAP : 'gap' ;
+CSS_VALUE_GRID_FUNCTION : 'repeat' ;
+CSS_VALUE_GRID_UNIT : 'fr' ;
 
 CSS_COLOR
     : '#' [a-fA-F0-9]+
@@ -29,7 +34,7 @@ CSS_COLOR
     ;
 
 CSS_VALUE_GENERAL
-    : [0-9]+ ('.' [0-9]+)? ('px' | 'em' | 'rem' | '%' | 'vw' | 'vh')?
+    : [0-9]+ ('.' [0-9]+)? (('px' | 'em' | 'rem' | '%' | 'vw' | 'vh')?)?
     ;
 
 NONE_KW : 'none' ;
