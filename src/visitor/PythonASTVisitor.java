@@ -51,24 +51,20 @@ public class PythonASTVisitor extends python_parserBaseVisitor<Node> {
             for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
                 names.add(new IdentifierNode(line, ctx.IDENTIFIER(i).getText()));
             }
-            return new ImportNode(line, module, names, null, true);
+            return new ImportNode(line, module, names,  true);
         }
 
 
-        if (ctx.IMPORT() != null && ctx.AS() == null) {
+        if (ctx.IMPORT() != null ) {
             List<IdentifierNode> names = new ArrayList<>();
             for (int i = 0; i < ctx.IDENTIFIER().size(); i++) {
                 names.add(new IdentifierNode(line, ctx.IDENTIFIER(i).getText()));
             }
 
-            return new ImportNode(line, null, names, null, false);
+            return new ImportNode(line, null, names,  false);
         }
 
-        if (ctx.AS() != null) {
-            IdentifierNode module = new IdentifierNode(line, ctx.IDENTIFIER(0).getText());
-            IdentifierNode alias = new IdentifierNode(line, ctx.IDENTIFIER(1).getText());
-            return new ImportNode(line, module, new ArrayList<>(), alias, false);
-        }
+
 
         return null;
     }
@@ -140,43 +136,12 @@ public class PythonASTVisitor extends python_parserBaseVisitor<Node> {
         return new ClassNode(line, className, body);
     }
 
-    @Override
-    public Node visitDefState(python_parser.DefStateContext ctx) {
-        int line = ctx.start.getLine();
-        python_parser.DefStmtContext defCtx = ctx.defStmt();
-        symbolTable.allocate();
-        IdentifierNode funcName = new IdentifierNode(line, defCtx.IDENTIFIER(0).getText());
 
-        SymbolRow funcRow = symbolTable.insert(funcName.getName());
-        funcRow.setType("function");
-        funcRow.setLine(line);
-
-        List<IdentifierNode> parameters = new ArrayList<>();
-        for (int i = 1; i < defCtx.IDENTIFIER().size(); i++) {
-            IdentifierNode param = new IdentifierNode(line, defCtx.IDENTIFIER(i).getText());
-            parameters.add(param);
-
-            SymbolRow pRow = symbolTable.insert(param.getName());
-            pRow.setType("parameter");
-            pRow.setLine(line);
-        }
-
-        List<Node> body = new ArrayList<>();
-        for (var st : defCtx.stat()) {
-            Node n = visit(st);
-            if (n != null) body.add(n);
-        }
-
-        symbolTable.free();
-
-        return new FunctionDefNode(line, funcName, parameters, body, new ArrayList<>());
-    }
 
 
     @Override
     public Node visitDecoratedDefState(python_parser.DecoratedDefStateContext ctx) {
         int line = ctx.start.getLine();
-
         python_parser.DecoratedDefContext decoratedCtx = ctx.getRuleContext(python_parser.DecoratedDefContext.class, 0);
         python_parser.DefStmtContext defCtx = decoratedCtx.defStmt();
         IdentifierNode funcName = new IdentifierNode(line, defCtx.IDENTIFIER(0).getText());
@@ -222,35 +187,45 @@ public class PythonASTVisitor extends python_parserBaseVisitor<Node> {
             Node arg = visit(e);
             if (arg != null) args.add(arg);
         }
-        for (var child : ctx.children) {
-            if (child instanceof python_parser.ArrayContext) {
-                Node n = visit(child);
-                if (n != null) args.add(n);
-            }
-        }
         return new FunctionCallNode(line, func, args);
     }
-
+    @Override
+    public Node visitDefState(python_parser.DefStateContext ctx) {
+        int line = ctx.start.getLine();
+        python_parser.DefStmtContext defCtx = ctx.defStmt();
+        symbolTable.allocate();
+        IdentifierNode funcName = new IdentifierNode(line, defCtx.IDENTIFIER(0).getText());
+        SymbolRow funcRow = symbolTable.insert(funcName.getName());
+        funcRow.setType("function");
+        funcRow.setLine(line);
+        List<IdentifierNode> parameters = new ArrayList<>();
+        for (int i = 1; i < defCtx.IDENTIFIER().size(); i++) {
+            IdentifierNode param = new IdentifierNode(line, defCtx.IDENTIFIER(i).getText());
+            parameters.add(param);
+            SymbolRow pRow = symbolTable.insert(param.getName());
+            pRow.setType("parameter");
+            pRow.setLine(line);
+        }
+        List<Node> body = new ArrayList<>();
+        for (var st : defCtx.stat()) {
+            Node n = visit(st);
+            if (n != null) body.add(n);
+        }
+        symbolTable.free();
+        return new FunctionDefNode(line, funcName, parameters, body, new ArrayList<>());
+    }
 
     @Override
     public Node visitWhileState(python_parser.WhileStateContext ctx) {
         int line = ctx.start.getLine();
         python_parser.WhileStmtContext whileCtx = ctx.whileStmt();
         Node condition = visit(whileCtx.expr());
-        List<Node> body = new ArrayList<>();
-        for (var st : whileCtx.stat()) {
-            Node n = visit(st);
-            if (n != null) body.add(n);
-        }
+        int whileStart = whileCtx.WHILE().getSymbol().getTokenIndex();
+        int elseStart = whileCtx.ELSE() != null ? whileCtx.ELSE().getSymbol().getTokenIndex() : Integer.MAX_VALUE;
+        List<Node> body = collectStatsBetween(whileCtx.stat(), whileStart, elseStart);
         List<Node> elseBody = new ArrayList<>();
         if (whileCtx.ELSE() != null) {
-            int elseIndex = whileCtx.ELSE().getSymbol().getTokenIndex();
-            for (var st : whileCtx.stat()) {
-                if (st.start.getTokenIndex() > elseIndex) {
-                    Node n = visit(st);
-                    if (n != null) elseBody.add(n);
-                }
-            }
+            elseBody = collectStatsBetween(whileCtx.stat(), elseStart, Integer.MAX_VALUE);
         }
         return new WhileNode(line, condition, body, elseBody.isEmpty() ? null : elseBody);
     }
@@ -339,13 +314,6 @@ public class PythonASTVisitor extends python_parserBaseVisitor<Node> {
         if (ctx.tuplesStmt() != null) return visit(ctx.tuplesStmt());
         if (ctx.setStmt() != null) return visit(ctx.setStmt());
         if (ctx.dictStmt() != null) return visit(ctx.dictStmt());
-        if (ctx.RANGE() != null) {
-            int line = ctx.start.getLine();
-            List<Node> args = new ArrayList<>();
-            for (var e : ctx.expr()) args.add(visit(e));
-            return new FunctionCallNode(line, new IdentifierNode(line, "range"), args);
-        }
-
         return null;
     }
 
@@ -414,7 +382,7 @@ public class PythonASTVisitor extends python_parserBaseVisitor<Node> {
             if (n != null) body.add(n);
         }
 
-        return new ForNode(line, iterator, iterable, body, new ArrayList<>());
+        return new ForNode(line, iterator, iterable, body);
     }
 
     @Override
@@ -467,7 +435,7 @@ public class PythonASTVisitor extends python_parserBaseVisitor<Node> {
             for (int i = 1; i < ctx.IDENTIFIER().size(); i++) {
                 target = new DotNode(line, target, new IdentifierNode(line, ctx.IDENTIFIER(i).getText()));
             }
-        } else { // array access
+        } else { 
             Node array = new IdentifierNode(line, ctx.IDENTIFIER(0).getText());
             List<Node> indices = new ArrayList<>();
             for (int i = 0; i < ctx.expr().size() - 1; i++) indices.add(visit(ctx.expr(i)));
@@ -477,29 +445,38 @@ public class PythonASTVisitor extends python_parserBaseVisitor<Node> {
         return new AssignNode(line, target, value);
     }
 
-
     @Override
     public Node visitExpr(python_parser.ExprContext ctx) {
         int line = ctx.start.getLine();
-        if (ctx.getChildCount() == 1) return visit(ctx.getChild(0));
-        Node node = visit(ctx.getChild(0));
-        for (int i = 1; i < ctx.getChildCount(); i += 2) {
-            String op = ctx.getChild(i).getText();
-            Node right = visit(ctx.getChild(i + 1));
-            node = new BinaryOpNode(line, node, op, right);
-        }
-        return node;
-    }
 
+        if (ctx.PLUS() != null || ctx.MINUS() != null ||
+                ctx.GREATERTHAN() != null || ctx.SMALLERTHAN() != null ||
+                ctx.EQ() != null || ctx.NOTEQ() != null ||
+                ctx.GREATEROREQ() != null || ctx.SMALLOREQ() != null ||
+                ctx.AND() != null || ctx.OR() != null ||
+                ctx.ASSIGN() != null) {
+
+            Node left = visit(ctx.expr(0));
+            Node right = visit(ctx.term());
+            String op = ctx.getChild(1).getText();
+            return new BinaryOpNode(line, left, op, right);
+        }
+
+        return visit(ctx.term());
+    }
     @Override
     public Node visitTerm(python_parser.TermContext ctx) {
         int line = ctx.start.getLine();
-        if (ctx.getChildCount() == 1) return visit(ctx.getChild(0));
-        Node left = visit(ctx.getChild(0));
-        String op = ctx.getChild(1).getText();
-        Node right = visit(ctx.getChild(2));
-        return new BinaryOpNode(line, left, op, right);
+
+        if (ctx.MUL() != null || ctx.DIV() != null) {
+            Node left = visit(ctx.factor(0));
+            Node right = visit(ctx.factor(1));
+            String op = (ctx.MUL() != null) ? "*" : "/";
+            return new BinaryOpNode(line, left, op, right);
+        }
+        return visit(ctx.factor(0));
     }
+
 
     @Override
     public Node visitFactor(python_parser.FactorContext ctx) {
