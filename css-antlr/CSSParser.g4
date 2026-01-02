@@ -34,12 +34,26 @@ declaration
     | fontWeightDecl
     | textAlignDecl
     | opacityDecl
+    | gridTemplateColumnsDecl
+    | gridGapDecl
+
     ;
 
 colorDecl
     : CSS_PROP_COLOR COLON (CSS_COLOR | CSS_ELEMENT) SEMICOLON
     ;
+gridTemplateColumnsDecl
+    : CSS_PROP_GRID_TEMPLATE_COLUMNS COLON gridValue SEMICOLON
+    ;
 
+gridGapDecl
+    : CSS_PROP_GRID_GAP COLON sizeValue SEMICOLON
+    ;
+
+gridValue
+    : CSS_VALUE_GRID_FUNCTION LPAREN NUMBER COMMA (CSS_VALUE_GENERAL | CSS_VALUE_GRID_UNIT) RPAREN
+    | (CSS_VALUE_GENERAL | CSS_VALUE_GRID_UNIT | AUTO_KW | NUMBER)+
+    ;
 backgroundColorDecl
     : CSS_PROP_BG_COLOR COLON (CSS_COLOR | NONE_KW | CSS_ELEMENT) SEMICOLON
     ;
@@ -71,15 +85,17 @@ boxValue
 borderDecl
     : CSS_PROP_BORDER COLON borderValue SEMICOLON
     ;
+displayDecl
+    : CSS_PROP_DISPLAY COLON (CSS_VALUE_DISPLAY | NONE_KW | CSS_ELEMENT) SEMICOLON
+    ;
+
 
 borderValue
     : NONE_KW
     | (CSS_VALUE_GENERAL | CSS_VALUE_BORDER_STYLE | CSS_COLOR | CSS_ELEMENT)+
     ;
 
-displayDecl
-    : CSS_PROP_DISPLAY COLON (CSS_VALUE_DISPLAY | NONE_KW | CSS_ELEMENT) SEMICOLON
-    ;
+
 
 positionDecl
     : CSS_PROP_POSITION COLON (CSS_VALUE_POSITION | CSS_ELEMENT) SEMICOLON
