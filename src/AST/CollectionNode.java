@@ -7,11 +7,13 @@ public class CollectionNode extends Node {
     private List<Node> elements;
     private List<Node> keys;
     private List<Node> values;
+
     public CollectionNode(int line, CollectionType type, List<Node> elements) {
         super(line, Kind.COLLECTION, "CollectionNode");
         this.type = type;
         this.elements = elements;
     }
+
     public CollectionNode(int line, List<Node> keys, List<Node> values) {
         super(line, Kind.COLLECTION, "CollectionNode");
         this.type = CollectionType.DICT;
@@ -37,6 +39,7 @@ public class CollectionNode extends Node {
             }
         }
     }
+
     public List<Node> getElements() {
         return elements;
     }

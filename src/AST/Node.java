@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Node {
-    protected int line;         
-    protected String nodeName;   
-    protected Kind kind;         
+    protected int line;
+    protected String nodeName;
+    protected Kind kind;
 
     public Node(int line, Kind kind, String nodeName) {
         this.line = line;
@@ -25,7 +25,6 @@ public abstract class Node {
         return nodeName;
     }
 
-    
     public abstract void print(String indent);
 
 }

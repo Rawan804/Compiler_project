@@ -6,7 +6,6 @@ public class ClassNode extends Node {
     private IdentifierNode className;
     private List<Node> body;
 
-
     public ClassNode(int line, IdentifierNode className, List<Node> body) {
         super(line, Kind.CLASS, "ClassNode");
         this.className = className;
@@ -28,6 +27,7 @@ public class ClassNode extends Node {
         className.print(indent + "    ");
         if (body != null) {
             for (Node stmt : body) {
+                System.out.println(indent + "  class body:");
                 stmt.print(indent + "  ");
             }
         }

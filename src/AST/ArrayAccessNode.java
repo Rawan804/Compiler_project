@@ -11,6 +11,7 @@ public class ArrayAccessNode extends Node {
         this.array = array;
         this.indices = indices;
     }
+
     @Override
     public void print(String indent) {
         System.out.println(indent + nodeName + " [line=" + line + "]");
@@ -19,9 +20,11 @@ public class ArrayAccessNode extends Node {
             idx.print(indent + "  ");
         }
     }
+
     public List<Node> getIndices() {
         return indices;
     }
+
     public Node getArray() {
         return array;
     }

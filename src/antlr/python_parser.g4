@@ -34,7 +34,7 @@ stat
 importStmt
     : FROM IDENTIFIER IMPORT IDENTIFIER (COMMA IDENTIFIER)*?
     | IMPORT IDENTIFIER (COMMA IDENTIFIER)*
-    | IMPORT IDENTIFIER AS IDENTIFIER
+
     ;
 
 
@@ -99,20 +99,20 @@ classStmt
     : CLASS IDENTIFIER COL stat*
     ;
 
+decoratedDef
+    : decorator+ defStmt
+    ;
 
 decorator
     : AT decoratorCall
     ;
 
 decoratorCall
-    : IDENTIFIER (DOT IDENTIFIER)* OPEN_B ((IDENTIFIER)* expr (COMMA expr)*)? CLOSE_B
+    : IDENTIFIER (DOT IDENTIFIER)* OPEN_B ( expr (COMMA expr)*)? CLOSE_B
     | IDENTIFIER (DOT IDENTIFIER)+ (ASSIGN)? LSB (expr (COMMA expr)*)? RSB
 
     ;
 
-decoratedDef
-    : decorator+ defStmt
-    ;
 
 
 defStmt
@@ -146,7 +146,7 @@ array
     | tuplesStmt
     | setStmt
     | dictStmt
-    | RANGE OPEN_B expr (COMMA expr)*? CLOSE_B
+
     ;
 
 
@@ -168,7 +168,7 @@ expr
     ;
 
 term
-    : term (MUL | DIV) factor
+    : factor (MUL | DIV) factor
     | factor
     ;
 

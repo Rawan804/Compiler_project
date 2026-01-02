@@ -1,5 +1,4 @@
 lexer grammar python_lexer;
-
 TRUE : 'True';
 FALSE : 'False';
 NULL : 'None';
@@ -25,7 +24,6 @@ TRY:'try';
 EXCEPT :'except';
 FOR:'for';
 IN:'in';
-RANGE:'range';
 WHILE:'while';
 FROM : 'from';
 IMPORT : 'import';

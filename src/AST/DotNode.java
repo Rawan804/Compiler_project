@@ -1,5 +1,8 @@
 package AST;
+
 public class DotNode extends  Node{
+
+
     private Node object;
     private   Node attribute;
 
