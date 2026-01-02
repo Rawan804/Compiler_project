@@ -61,6 +61,7 @@ element
     | form
     | button
     | input
+    |textarea
     | img
     | br
     | link
@@ -69,7 +70,6 @@ element
 
 textContent
     : TEXT        #plainText
-    | VAL         #valText
     ;
 
 inlineContent
@@ -89,7 +89,7 @@ div
 
 ul
     : OPEN UL attribute* CLOSE
-        li*content*
+        (li|content|jinjaStmt )*
       OPEN SLASH UL CLOSE
     #ulNode
     ;
@@ -102,7 +102,7 @@ li
     ;
 
 form
-    : OPEN FORM attribute* METHOD_KW EQ METHOD CLOSE
+    : OPEN FORM attribute* (ACTION_KW EQ (STRING | jinjaExpr))? (METHOD_KW EQ METHOD)? CLOSE
         content*
       OPEN SLASH FORM CLOSE
     #formNode
@@ -145,23 +145,26 @@ span
     ;
 
 a
-    : OPEN A attribute* (HREF_KW EQ STRING) CLOSE inlineContent* OPEN SLASH A CLOSE
+    : OPEN A attribute* (HREF_KW EQ (STRING | jinjaExpr)) CLOSE content* OPEN SLASH A CLOSE
     #aNode
     ;
 
+
 button
-    : OPEN BUTTON_KW attribute*  (TYPE_KW EQ TYPE)* (NAME EQ STRING)* CLOSE inlineContent* OPEN SLASH BUTTON_KW CLOSE
+    : OPEN BUTTON_KW attribute*  (TYPE_KW EQ TYPE)* (NAME EQ STRING)* CLOSE content* OPEN SLASH BUTTON_KW CLOSE
     #buttonNode
     ;
 
 
 input
-    : OPEN INPUT attribute* (TYPE_KW EQ TYPE)* (NAME EQ STRING)* SLASH? CLOSE
+    : OPEN INPUT attribute* (TYPE_KW EQ TYPE)* (NAME EQ STRING)*(PLACEHOLDER EQ STRING)* REQUIRED? SLASH? CLOSE
     #inputNode
     ;
-
+textarea: OPEN TEXTAREA attribute* (TYPE_KW EQ TYPE)* (NAME EQ STRING)*(PLACEHOLDER EQ STRING)* REQUIRED? CLOSE OPEN SLASH? TEXTAREA CLOSE
+             #textareaNode
+             ;
 img
-    : OPEN IMG attribute* (SRC EQ STRING)? SLASH? CLOSE
+    : OPEN IMG attribute* (SRC EQ (STRING | jinjaExpr))? SLASH CLOSE
     #imgNode
     ;
 
@@ -171,7 +174,7 @@ br
     ;
 
 link
-    : OPEN LINK attribute* (REL_KW EQ F)? (HREF_KW EQ STRING)? SLASH? CLOSE
+    : OPEN LINK attribute* (REL_KW EQ REL)? (HREF_KW EQ STRING)? SLASH? CLOSE
     #linkNode
     ;
 
@@ -181,6 +184,9 @@ attribute
     | ATR                             #booleanAttribute
     | ATR EQ STRING                   #stringAttribute
     | ATR EQ jinjaExpr                #jinjaAttribute
+    | PLACEHOLDER EQ STRING #placeholerAtr
+    | REQUIRED #requiredAtr
+
 
     ;
 
