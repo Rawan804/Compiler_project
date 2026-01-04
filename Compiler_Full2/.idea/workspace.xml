@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b1e75791-7d3a-448f-b19a-26a05d54ca31" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="37Zwc1GkwRH6WoGz8ujHAkmecnw" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.TestASTVisitor.executor": "Run",
+    "Application.UnifiedMain.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Lenovo/OneDrive/Desktop/Compiler_Full2",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "database.data.views.appearance"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\NCC\Desktop\hallak\src\htmljenja" />
+      <recent name="C:\Users\NCC\Desktop\compiler\hallak\src\samples" />
+      <recent name="C:\Users\NCC\Desktop\hallak\untitled2\src\htmljenja" />
+      <recent name="C:\Users\NCC\Desktop\hallak\gen" />
+      <recent name="C:\Users\NCC\Desktop\hallak\untitled2\src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Lenovo\OneDrive\Desktop\hallak\src\SybolTable" />
+      <recent name="C:\Users\Lenovo\OneDrive\Desktop\hallak\src\LexerandParser" />
+      <recent name="C:\Users\NCC\Desktop\hallak\src\samples" />
+      <recent name="C:\Users\NCC\Desktop\hallak" />
+      <recent name="C:\Users\NCC\Desktop\hallak\untitled2\src\samples" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b1e75791-7d3a-448f-b19a-26a05d54ca31" name="Changes" comment="" />
+      <created>1767123976698</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1767123976698</updated>
+    </task>
+    <servers />
+  </component>
+</project>
