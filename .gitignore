@@ -1,0 +1,10 @@
+# IDE
+.idea/
+*.iml
+
+# Build / generated
+/out/
+/gen/
+*.interp
+*.tokens
+*.class

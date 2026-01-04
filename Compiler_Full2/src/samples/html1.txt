@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>المنتجات</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div>
+        <h1>قائمة المنتجات </h1>
+    </div>
+    <div>
+        <br />
+    </div>
+    <div>
+        <ul>
+            {% for product in products %}
+            <li>
+                <div>
+                    <a href="{{ url_for('details', product_id=product.id) }}">
+                        <img src="{{ url_for('static', filename='images/' + product.image) }}" />
+                        <span>{{ product.name }}</span>
+                    </a>
+                    <form class="delete-form" action="{{ url_for('delete_product_route', product_id=product.id) }}"
+                        method="post">
+                        <button class="btn-delete" type="submit">
+                            🗑</button>
+                    </form>
+                    <span> - </span>
+                    <span>${{ product.price }}</span>
+
+                </div>
+            </li>
+
+
+
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <button>
+            <a href="{{ url_for('add_product') }}">أضف منتج جديد</a>
+        </button>
+    </div>
+</body>
+
+</html>

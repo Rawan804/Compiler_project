@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>صفحة اختبار بسيطة</title>
+</head>
+<body>
+    <div>
+        <h1>{{ page_title }}</h1>
+        <p>تاريخ اليوم: {{ current_date }}</p>
+    </div>
+
+    <div class="content">
+        <div class="box">
+            <h3>المستخدمون</h3>
+            <ul>
+                {% for user in users %}
+                <li>
+                    {{ user.name }} - {{ user.age }} سنة
+                    {% if user.active %}
+                    <span style="color: green;">● نشط</span>
+                    {% else %}
+                    <span style="color: red;">● غير نشط</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="box">
+            <h3>الإحصائيات</h3>
+            <p>عدد المستخدمين: {{ users | length }}</p>
+            <p>المستخدمون النشطون: {{ active_users_count }}</p>
+            <p>الاسم بأحرف كبيرة: {{ "welcome" | upper }}</p>
+        </div>
+    </div>
+
+    <div >
+        <h3>تسجيل الدخول</h3>
+        <form method="post">
+            <div style="margin-bottom: 15px;">
+                <input type="password" name="username">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <input type="text" name="password ">
+            </div>
+
+            <button type="submit" >
+                دخول
+            </button>
+        </form>
+    </div>
+
+    <div>
+        <p>جميع الحقوق محفوظة {{ current_year }}</p>
+        {# هذا تعليق في Jinja2 ولن يظهر في الناتج #}
+    </div>
+</body>
+</html>
